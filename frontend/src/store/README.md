@@ -1,0 +1,3 @@
+# store
+
+Global state (Zustand).

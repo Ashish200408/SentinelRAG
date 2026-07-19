@@ -1,0 +1,3 @@
+# rewriter
+
+Query Rewriting module.

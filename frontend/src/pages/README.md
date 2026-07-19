@@ -1,0 +1,3 @@
+# pages
+
+Route components.

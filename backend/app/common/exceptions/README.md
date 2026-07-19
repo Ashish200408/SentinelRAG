@@ -1,0 +1,3 @@
+# exceptions
+
+Shared application exceptions.
