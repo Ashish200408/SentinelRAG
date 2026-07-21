@@ -15,6 +15,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.api.routers import api_router
+app.include_router(api_router, prefix="/api/v1")
+
 @app.get("/")
 async def health_check():
     return {"status": "healthy"}

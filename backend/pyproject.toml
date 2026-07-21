@@ -9,6 +9,10 @@ dependencies = [
     "uvicorn[standard]>=0.30.1",
     "pydantic>=2.7.4",
     "pydantic-settings>=2.3.4",
+    "pymupdf>=1.28.0",
+    "pytesseract>=0.3.13",
+    "pillow>=12.3.0",
+    "python-multipart>=0.0.32",
 ]
 
 [project.optional-dependencies]
@@ -39,4 +43,7 @@ minversion = "8.0"
 addopts = "-v"
 testpaths = [
     "tests",
+]
+pythonpath = [
+  "."
 ]

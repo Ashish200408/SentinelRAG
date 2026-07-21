@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.2",
+    "axios": "^1.18.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.25.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-dropzone": "^19.1.1",
     "react-router-dom": "^7.18.1",
     "tailwind-merge": "^3.6.0",
     "zustand": "^5.0.14"
