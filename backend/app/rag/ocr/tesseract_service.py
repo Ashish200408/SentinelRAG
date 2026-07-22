@@ -6,14 +6,24 @@ import fitz
 import pytesseract
 from PIL import Image
 
-# Configure Tesseract
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
-os.environ["TESSDATA_PREFIX"] = r"C:\Program Files\Tesseract-OCR\tessdata"
+# Configure Tesseract only on Windows
+if os.name == "nt":
+    pytesseract.pytesseract.tesseract_cmd = (
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    )
+    os.environ["TESSDATA_PREFIX"] = (
+        r"C:\Program Files\Tesseract-OCR\tessdata"
+    )
 
-print("Using Tesseract:", pytesseract.pytesseract.tesseract_cmd)
-print("Detected Version:", pytesseract.get_tesseract_version())
+# Check whether Tesseract is available
+try:
+    print("Using Tesseract:", pytesseract.pytesseract.tesseract_cmd)
+    print("Detected Version:", pytesseract.get_tesseract_version())
+    TESSERACT_AVAILABLE = True
+except Exception:
+    print("Tesseract not found. OCR functionality will be unavailable.")
+    TESSERACT_AVAILABLE = False
+
 
 class TesseractOCRService:
     def extract(self, file_path: str) -> Tuple[str, int, int]:
@@ -23,6 +33,11 @@ class TesseractOCRService:
         Returns:
             (text, page_count, pages_using_ocr)
         """
+
+        if not TESSERACT_AVAILABLE:
+            raise RuntimeError(
+                "Tesseract OCR is not installed on this server."
+            )
 
         extracted_text = []
         pages_using_ocr = 0
@@ -44,7 +59,7 @@ class TesseractOCRService:
 
                 text = pytesseract.image_to_string(
                     img,
-                    config="--oem 3 --psm 6"
+                    config="--oem 3 --psm 6",
                 )
 
                 extracted_text.append(text)
