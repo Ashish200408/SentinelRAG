@@ -15,14 +15,14 @@ if os.name == "nt":
         r"C:\Program Files\Tesseract-OCR\tessdata"
     )
 
-# Check whether Tesseract is available
+TESSERACT_AVAILABLE = False
+
 try:
-    print("Using Tesseract:", pytesseract.pytesseract.tesseract_cmd)
-    print("Detected Version:", pytesseract.get_tesseract_version())
+    pytesseract.get_tesseract_version()
     TESSERACT_AVAILABLE = True
+    print("Tesseract detected.")
 except Exception:
-    print("Tesseract not found. OCR functionality will be unavailable.")
-    TESSERACT_AVAILABLE = False
+    print("Tesseract is not available on this server. OCR disabled.")
 
 
 class TesseractOCRService:
