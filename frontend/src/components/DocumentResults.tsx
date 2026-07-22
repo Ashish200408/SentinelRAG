@@ -1,6 +1,7 @@
 import React from 'react';
 import type { DocumentResponseData } from '../services/uploadService';
 import { FileText, CheckCircle, Clock, Hash, AlignLeft, ShieldCheck } from 'lucide-react';
+import { ChatInterface } from './ChatInterface';
 
 interface DocumentResultsProps {
     data: DocumentResponseData;
@@ -91,6 +92,8 @@ export const DocumentResults: React.FC<DocumentResultsProps> = ({ data, onReset 
                     {data.preview || "No text could be extracted."}
                 </div>
             </div>
+
+            <ChatInterface />
         </div>
     );
 };

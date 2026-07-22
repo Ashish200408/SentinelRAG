@@ -4,13 +4,15 @@ import time
 from datetime import datetime
 from typing import List
 
-from app.rag.ingestion.models import DocumentProcessingResult, ProcessingSummary
+from app.rag.ingestion.models import DocumentProcessingResult, ProcessingSummary, IndexingSummary
 from app.rag.ingestion.validator import validator
 from app.rag.ingestion.extractor import extractor
 from app.rag.ocr.tesseract_service import ocr_service
 from app.rag.ingestion.cleaner import cleaner
 from app.rag.ingestion.metadata import metadata_generator
 from app.rag.chunking.deterministic import chunker
+from app.rag.embedding.service import embedding_service
+from app.providers.qdrant.provider import qdrant_provider
 from app.config.thresholds import thresholds
 from fastapi import HTTPException
 
@@ -86,6 +88,38 @@ class DocumentProcessor:
                 processing_status="COMPLETED"
             )
 
+            # 9. Embedding and Indexing (Phase 3)
+            indexing_summary = None
+            if chunks:
+                log("Generating Embeddings")
+                start_indexing = time.time()
+                
+                embeddings = embedding_service.generate_embeddings(chunks)
+                log("Embeddings Generated")
+                
+                payloads = []
+                for i, chunk_text in enumerate(chunks):
+                    payloads.append({
+                        "document_id": metadata.document_id,
+                        "filename": metadata.filename,
+                        "chunk_index": i,
+                        "chunk_text": chunk_text,
+                        "sha256": metadata.sha256,
+                        "upload_timestamp": metadata.upload_timestamp.isoformat()
+                    })
+                
+                log("Storing Vectors in Qdrant")
+                qdrant_provider.store_vectors(embeddings, payloads)
+                indexing_time_ms = int((time.time() - start_indexing) * 1000)
+                log("Vectors Stored Successfully")
+                
+                indexing_summary = IndexingSummary(
+                    collection_name=qdrant_provider.collection_name,
+                    vectors_stored=len(chunks),
+                    indexing_status="COMPLETED",
+                    indexing_time_ms=indexing_time_ms
+                )
+            
             preview = cleaned_text[:500] if cleaned_text else ""
             log("Processing Completed")
 
@@ -95,6 +129,7 @@ class DocumentProcessor:
                 chunks=chunks,
                 preview=preview,
                 processing_summary=summary,
+                indexing_summary=indexing_summary,
                 processing_logs=logs
             )
 

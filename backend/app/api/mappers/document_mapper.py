@@ -14,7 +14,8 @@ class DocumentResponseMapper:
                 upload_timestamp=result.metadata.upload_timestamp.isoformat(),
                 chunk_count=len(result.chunks),
                 preview=result.preview,
-                processing_summary=result.processing_summary
+                processing_summary=result.processing_summary,
+                indexing_summary=result.indexing_summary
             )
         )
 

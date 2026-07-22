@@ -19,10 +19,17 @@ class ProcessingSummary(BaseModel):
     processing_time_ms: int = 0
     processing_status: str = "PENDING"
 
+class IndexingSummary(BaseModel):
+    collection_name: str = ""
+    vectors_stored: int = 0
+    indexing_status: str = "PENDING"
+    indexing_time_ms: int = 0
+
 class DocumentProcessingResult(BaseModel):
     metadata: DocumentMetadata
     cleaned_text: str = ""
     chunks: List[str] = Field(default_factory=list)
     preview: str = ""
     processing_summary: ProcessingSummary = Field(default_factory=ProcessingSummary)
+    indexing_summary: Optional[IndexingSummary] = None
     processing_logs: List[str] = Field(default_factory=list)
