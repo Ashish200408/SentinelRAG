@@ -7,7 +7,10 @@ from typing import List
 from app.rag.ingestion.models import DocumentProcessingResult, ProcessingSummary, IndexingSummary
 from app.rag.ingestion.validator import validator
 from app.rag.ingestion.extractor import extractor
-from app.rag.ocr.tesseract_service import ocr_service
+from app.rag.ocr.tesseract_service import (
+    ocr_service,
+    TESSERACT_AVAILABLE,
+)
 from app.rag.ingestion.cleaner import cleaner
 from app.rag.ingestion.metadata import metadata_generator
 from app.rag.chunking.deterministic import chunker
@@ -48,14 +51,38 @@ class DocumentProcessor:
             # 4. Native Extraction
             raw_text, page_count, pages_with_text = extractor.extract(file_path)
             log("PDF Parsed")
-            
+        
+            # 5. OCR Trigger Check
             pages_using_ocr = 0
 
-            # 5. OCR Trigger Check
             if len(raw_text.strip()) < thresholds.MIN_NATIVE_TEXT_LENGTH:
+                log("Native text below threshold.")
+
+                if not TESSERACT_AVAILABLE:
+                    log("OCR unavailable on this deployment.")
+
+                    raise HTTPException(
+            status_code=400,
+            detail=(
+                "This PDF appears to be scanned or image-based. "
+                "OCR is unavailable on this deployment. "
+                "Please upload a searchable PDF."
+            ),
+        )
+
                 log("OCR Triggered")
-                raw_text, page_count, pages_using_ocr = ocr_service.extract(file_path)
-                pages_with_text = pages_using_ocr
+
+                ocr_text, ocr_page_count, ocr_pages = ocr_service.extract(file_path)
+
+                if ocr_text.strip():
+                    raw_text = ocr_text
+                    page_count = ocr_page_count
+                    pages_using_ocr = ocr_pages
+                    pages_with_text = ocr_pages
+                    log("OCR Completed Successfully")
+                else:
+                    log("OCR returned no text. Continuing with native extraction.")
+
             else:
                 log("OCR Skipped")
 
@@ -133,10 +160,14 @@ class DocumentProcessor:
                 processing_logs=logs
             )
 
+        except HTTPException:
+            raise
+
         except Exception as e:
-            log(f"Processing Failed: {str(e)}")
-            if isinstance(e, HTTPException):
-                raise e
-            raise HTTPException(status_code=500, detail=f"Processing failed: {str(e)}")
+            log(f"Processing Failed: {e}")
+            raise HTTPException(
+        status_code=500,
+        detail=f"Processing failed: {e}",
+    )
 
 processor = DocumentProcessor()

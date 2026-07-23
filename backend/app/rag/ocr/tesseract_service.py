@@ -1,5 +1,5 @@
-import os
 import io
+import os
 from typing import Tuple
 
 import fitz
@@ -34,12 +34,12 @@ class TesseractOCRService:
             (text, page_count, pages_using_ocr)
         """
 
+        # Skip OCR if Tesseract is unavailable
         if not TESSERACT_AVAILABLE:
-            raise RuntimeError(
-                "Tesseract OCR is not installed on this server."
-            )
+            print("Skipping OCR because Tesseract is unavailable.")
+            return "", 0, 0
 
-        extracted_text = []
+        extracted_text: list[str] = []
         pages_using_ocr = 0
         doc = None
 
@@ -57,9 +57,12 @@ class TesseractOCRService:
                 # Increase contrast
                 img = img.point(lambda x: 0 if x < 150 else 255)
 
-                text = pytesseract.image_to_string(
-                    img,
-                    config="--oem 3 --psm 6",
+                # Explicitly convert to string
+                text = str(
+                    pytesseract.image_to_string(
+                        img,
+                        config="--oem 3 --psm 6",
+                    )
                 )
 
                 extracted_text.append(text)
@@ -68,7 +71,7 @@ class TesseractOCRService:
                     pages_using_ocr += 1
 
         except Exception as e:
-            raise RuntimeError(f"OCR processing failed: {e}")
+            raise RuntimeError(f"OCR processing failed: {e}") from e
 
         finally:
             if doc is not None:
