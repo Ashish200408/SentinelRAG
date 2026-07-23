@@ -3,7 +3,8 @@ import { queryChat } from '../services/chatService';
 import type { ChatQueryResponse } from '../services/chatService';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { MessageSquare, Send, ChevronDown, ChevronUp, Loader2, AlertCircle, FileText, Activity } from 'lucide-react';
+import { Send, ChevronDown, ChevronUp, Loader2, AlertCircle, FileText, Activity, Bot } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export const ChatInterface: React.FC = () => {
     const [question, setQuestion] = useState('');
@@ -40,10 +41,12 @@ export const ChatInterface: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto mt-8 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-            <div className="p-6 bg-indigo-50 border-b border-gray-200 flex items-center">
-                <MessageSquare className="w-6 h-6 text-indigo-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Ask Questions</h3>
+        <div className="w-full max-w-4xl mx-auto mt-8 glass-card rounded-2xl overflow-hidden shadow-2xl">
+            <div className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border-b border-gray-100 dark:border-gray-800 flex items-center">
+                <div className="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mr-4">
+                    <Bot className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">Ask Questions</h3>
             </div>
             
             <div className="p-6 space-y-6">
@@ -54,16 +57,16 @@ export const ChatInterface: React.FC = () => {
                         onChange={(e) => setQuestion(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Ask a question about your uploaded document..."
-                        className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-3 px-4 border"
+                        className="flex-1 rounded-xl border-gray-200 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 py-3.5 px-5 border bg-white/50 backdrop-blur-sm"
                         disabled={loading}
                     />
                     <button
                         type="submit"
                         disabled={loading || !question.trim()}
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="inline-flex items-center px-8 py-3.5 border border-transparent text-base font-semibold rounded-xl shadow-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:shadow-lg active:scale-95"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                        <span className="ml-2">{loading ? 'Asking...' : 'Ask'}</span>
+                        <span className="ml-2">{loading ? 'Thinking...' : 'Ask'}</span>
                     </button>
                 </form>
 
@@ -84,11 +87,13 @@ export const ChatInterface: React.FC = () => {
                 )}
 
                 {response && (
-                    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6 pt-4">
                         {response.answer && (
-                            <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
-                                <h4 className="text-md font-semibold text-gray-900 mb-2">Answer</h4>
-                                <div className="text-gray-800 prose prose-sm max-w-none">
+                            <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                                <h4 className="text-md font-bold text-gray-900 mb-3 flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-indigo-500 mr-2" /> Answer
+                                </h4>
+                                <div className="text-gray-800 prose prose-sm max-w-none prose-indigo">
                                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                         {response.answer}
                                     </ReactMarkdown>
@@ -129,7 +134,7 @@ export const ChatInterface: React.FC = () => {
                         )}
 
                         {response.decision && (
-                            <div className="border border-gray-200 rounded-md overflow-hidden">
+                            <div className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm bg-white">
                                 <button 
                                     onClick={() => setShowDecision(!showDecision)}
                                     className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors focus:outline-none"
@@ -175,7 +180,7 @@ export const ChatInterface: React.FC = () => {
                                 )}
                             </div>
                         )}
-                    </div>
+                    </motion.div>
                 )}
             </div>
         </div>

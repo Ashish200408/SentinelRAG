@@ -2,6 +2,7 @@ import React from 'react';
 import type { DocumentResponseData } from '../services/uploadService';
 import { FileText, CheckCircle, Clock, Hash, AlignLeft, ShieldCheck } from 'lucide-react';
 import { ChatInterface } from './ChatInterface';
+import { motion } from 'framer-motion';
 
 interface DocumentResultsProps {
     data: DocumentResponseData;
@@ -10,26 +11,28 @@ interface DocumentResultsProps {
 
 export const DocumentResults: React.FC<DocumentResultsProps> = ({ data, onReset }) => {
     return (
-        <div className="w-full max-w-4xl mx-auto mt-10 space-y-6">
-            <div className="flex items-center justify-between p-6 bg-green-50 border border-green-200 rounded-lg">
+        <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-4xl mx-auto mt-10 space-y-6">
+            <div className="flex items-center justify-between p-6 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl shadow-lg text-white">
                 <div className="flex items-center space-x-4">
-                    <CheckCircle className="w-8 h-8 text-green-500" />
+                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                        <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
                     <div>
-                        <h2 className="text-xl font-semibold text-green-900">Upload Successful</h2>
-                        <p className="text-green-700">{data.filename}</p>
+                        <h2 className="text-xl font-bold text-white">Upload Successful</h2>
+                        <p className="text-green-50 text-sm font-medium">{data.filename}</p>
                     </div>
                 </div>
                 <button 
                     onClick={onReset}
-                    className="px-4 py-2 text-sm font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200"
+                    className="px-5 py-2.5 text-sm font-semibold text-green-700 bg-white rounded-xl hover:bg-green-50 transition-colors shadow-sm"
                 >
                     Upload Another
                 </button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <div className="p-6 glass-card rounded-2xl">
+                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                         <FileText className="w-5 h-5 mr-2 text-gray-500" />
                         Metadata
                     </h3>
@@ -53,8 +56,8 @@ export const DocumentResults: React.FC<DocumentResultsProps> = ({ data, onReset 
                     </dl>
                 </div>
 
-                <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <div className="p-6 glass-card rounded-2xl">
+                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center">
                         <ShieldCheck className="w-5 h-5 mr-2 text-blue-500" />
                         Processing Summary
                     </h3>
@@ -83,8 +86,8 @@ export const DocumentResults: React.FC<DocumentResultsProps> = ({ data, onReset 
                 </div>
             </div>
 
-            <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <div className="p-6 glass-card rounded-2xl">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
                     <AlignLeft className="w-5 h-5 mr-2 text-gray-500" />
                     Cleaned Text Preview (First 500 characters)
                 </h3>
@@ -94,6 +97,6 @@ export const DocumentResults: React.FC<DocumentResultsProps> = ({ data, onReset 
             </div>
 
             <ChatInterface />
-        </div>
+        </motion.div>
     );
 };
