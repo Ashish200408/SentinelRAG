@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+const API_BASE_URL = "https://sentinelrag-production.up.railway.app/api/v1";
 
 export interface SourceMetadata {
     document_id: string;
