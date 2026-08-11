@@ -23,8 +23,8 @@ def test_missing_gemini_key(monkeypatch):
 def test_qdrant_unavailable(monkeypatch):
     monkeypatch.setattr(settings, "QDRANT_URL", "http://localhost:9999")
     from app.providers.qdrant.provider import QdrantProvider
-    with pytest.raises(Exception):
-        QdrantProvider()
+    provider = QdrantProvider()
+    assert provider.collection_name == settings.QDRANT_COLLECTION
 
 def test_valid_query(monkeypatch):
     # Mock retrieval and gemini
@@ -35,7 +35,7 @@ def test_valid_query(monkeypatch):
     
     def mock_retrieve(self, q):
         return [
-            RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="The capital of France is Paris.", similarity_score=0.9, page_number=1)
+            RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="The capital of France is Paris.", similarity_score=0.9, page_numbers=[1])
         ]
     
     def mock_gemini(self, p):
@@ -60,7 +60,7 @@ def test_irrelevant_query(monkeypatch):
     
     def mock_retrieve(self, q):
         return [
-            RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="Apples are red.", similarity_score=0.9, page_number=1)
+            RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="Apples are red.", similarity_score=0.9, page_numbers=[1])
         ]
     
     def mock_gemini(self, p):

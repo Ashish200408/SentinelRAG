@@ -1,7 +1,7 @@
 import re
 
 class DocumentCleaner:
-    def clean(self, text: str) -> str:
+    def _clean_text(self, text: str) -> str:
         if not text:
             return ""
 
@@ -46,5 +46,15 @@ class DocumentCleaner:
         text = '\n'.join(final_lines)
         
         return text.strip()
+
+    def clean(self, pages: list[dict]) -> list[dict]:
+        cleaned_pages = []
+        for page in pages:
+            cleaned_text = self._clean_text(page["text"])
+            cleaned_pages.append({
+                "page_number": page["page_number"],
+                "text": cleaned_text
+            })
+        return cleaned_pages
 
 cleaner = DocumentCleaner()

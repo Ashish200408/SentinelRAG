@@ -1,17 +1,19 @@
-const API_BASE_URL = "https://sentinelrag-production.up.railway.app/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
 
 export interface SourceMetadata {
     document_id: string;
     filename: string;
     chunk_index: number;
     similarity_score: number;
-    page_number?: number | null;
+    page_numbers?: number[] | null;
 }
 
 export interface DecisionMetadata {
     path: string;
     retrieval_quality: string;
     rewritten: boolean;
+    original_query: string;
+    current_query: string;
     rewritten_query?: string | null;
     retrieval_attempts: number;
     best_similarity: number;

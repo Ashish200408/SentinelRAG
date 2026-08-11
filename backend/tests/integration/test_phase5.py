@@ -15,6 +15,12 @@ def test_phase5_direct_answer(monkeypatch):
     def mock_evaluate(chunks):
         return ContextEvaluation(quality=ContextQuality.GOOD, best_score=0.9, average_score=0.85, retrieved_chunks=len(chunks))
     monkeypatch.setattr(context_evaluator, "evaluate", mock_evaluate)
+
+    from app.rag.retrieval.service import RetrievalService
+    from app.rag.retrieval.models import RetrievedChunk
+    def mock_retrieve(self, q):
+        return [RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="CRUD is...", similarity_score=0.9, page_numbers=[1])]
+    monkeypatch.setattr(RetrievalService, "retrieve", mock_retrieve)
         
     response = client.post("/api/v1/chat/query", json={"question": "What is CRUD?"})
     assert response.status_code == 200
@@ -45,6 +51,12 @@ def test_phase5_rewrite_triggered(monkeypatch):
         
     monkeypatch.setattr(context_evaluator, "evaluate", mock_evaluate)
 
+    from app.rag.retrieval.service import RetrievalService
+    from app.rag.retrieval.models import RetrievedChunk
+    def mock_retrieve(self, q):
+        return [RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="CRUD is...", similarity_score=0.9, page_numbers=[1])]
+    monkeypatch.setattr(RetrievalService, "retrieve", mock_retrieve)
+
     response = client.post("/api/v1/chat/query", json={"question": "Explain CRUD functions"})
     assert response.status_code == 200
     data = response.json()
@@ -56,9 +68,14 @@ def test_phase5_rewrite_triggered(monkeypatch):
     assert data["answer"] is not None
 
 @pytest.mark.integration
-def test_phase5_ask_clarification():
+def test_phase5_ask_clarification(monkeypatch):
     if not settings.GEMINI_API_KEY:
         pytest.skip("GEMINI_API_KEY is not set")
+
+    from app.rag.retrieval.service import RetrievalService
+    def mock_retrieve(self, q):
+        return []
+    monkeypatch.setattr(RetrievalService, "retrieve", mock_retrieve)
         
     response = client.post("/api/v1/chat/query", json={"question": "Tell me about Kubernetes"})
     assert response.status_code == 200

@@ -7,12 +7,14 @@ class SourceMetadata(BaseModel):
     filename: str
     chunk_index: int
     similarity_score: float
-    page_number: Optional[int] = None
+    page_numbers: Optional[list[int]] = None
 
 class DecisionMetadata(BaseModel):
     path: str
     retrieval_quality: str
     rewritten: bool
+    original_query: str
+    current_query: str
     rewritten_query: Optional[str] = None
     retrieval_attempts: int
     best_similarity: float

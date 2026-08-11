@@ -7,4 +7,4 @@ class RetrievedChunk(BaseModel):
     chunk_index: int
     chunk_text: str
     similarity_score: float
-    page_number: Optional[int] = None
+    page_numbers: Optional[list[int]] = None

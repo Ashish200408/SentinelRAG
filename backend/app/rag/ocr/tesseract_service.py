@@ -26,20 +26,20 @@ except Exception:
 
 
 class TesseractOCRService:
-    def extract(self, file_path: str) -> Tuple[str, int, int]:
+    def extract(self, file_path: str) -> Tuple[list[dict], int, int]:
         """
         Extract text from PDF using OCR.
 
         Returns:
-            (text, page_count, pages_using_ocr)
+            (extracted_pages, page_count, pages_using_ocr)
         """
 
         # Skip OCR if Tesseract is unavailable
         if not TESSERACT_AVAILABLE:
             print("Skipping OCR because Tesseract is unavailable.")
-            return "", 0, 0
+            return [], 0, 0
 
-        extracted_text: list[str] = []
+        extracted_pages: list[dict] = []
         pages_using_ocr = 0
         doc = None
 
@@ -65,7 +65,7 @@ class TesseractOCRService:
                     )
                 )
 
-                extracted_text.append(text)
+                extracted_pages.append({"page_number": page.number + 1, "text": text})
 
                 if text.strip():
                     pages_using_ocr += 1
@@ -78,7 +78,7 @@ class TesseractOCRService:
                 doc.close()
 
         return (
-            "\n".join(extracted_text),
+            extracted_pages,
             page_count,
             pages_using_ocr,
         )

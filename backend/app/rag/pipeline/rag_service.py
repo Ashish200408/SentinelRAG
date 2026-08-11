@@ -80,6 +80,8 @@ Question:
             path=decision,
             retrieval_quality=evaluation.quality.value,
             rewritten=rewritten,
+            original_query=question,
+            current_query=current_query,
             rewritten_query=rewritten_query,
             retrieval_attempts=attempt,
             best_similarity=evaluation.best_score,

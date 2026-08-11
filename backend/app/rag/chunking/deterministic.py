@@ -2,8 +2,21 @@ from typing import List
 from app.config.thresholds import thresholds
 
 class DeterministicChunker:
-    def chunk(self, text: str) -> List[str]:
-        if not text:
+    def chunk(self, pages: list[dict]) -> list[dict]:
+        if not pages:
+            return []
+            
+        full_text = ""
+        char_to_page = []
+        for page in pages:
+            page_num = page["page_number"]
+            # Add a newline between pages if we concatenate
+            page_text = page["text"] + "\n"
+            full_text += page_text
+            char_to_page.extend([page_num] * len(page_text))
+            
+        full_text = full_text.strip()
+        if not full_text:
             return []
             
         chunk_size = thresholds.CHUNK_SIZE
@@ -11,16 +24,23 @@ class DeterministicChunker:
         
         chunks = []
         start = 0
-        text_length = len(text)
+        text_length = len(full_text)
         
         while start < text_length:
             end = min(start + chunk_size, text_length)
             
-            # If we are not at the end of the text, try to find a nice boundary (e.g., newline or space)
-            # We'll stick to strict deterministic character counts for now as requested.
-            # "No semantic chunking." - user
-            chunk = text[start:end]
-            chunks.append(chunk)
+            chunk_text = full_text[start:end]
+            
+            span_pages = char_to_page[start:end]
+            unique_pages = []
+            for p in span_pages:
+                if p not in unique_pages:
+                    unique_pages.append(p)
+            
+            chunks.append({
+                "text": chunk_text,
+                "page_numbers": unique_pages
+            })
             
             if end == text_length:
                 break

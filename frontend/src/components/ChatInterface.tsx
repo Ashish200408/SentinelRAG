@@ -125,7 +125,7 @@ export const ChatInterface: React.FC = () => {
                                             </span>
                                             <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                                                 <span>Similarity: {source.similarity_score.toFixed(3)}</span>
-                                                {source.page_number && <span>Page: {source.page_number}</span>}
+                                                {source.page_numbers && source.page_numbers.length > 0 && <span>Page: {source.page_numbers.join(', ')}</span>}
                                             </div>
                                         </div>
                                     ))}
@@ -164,6 +164,14 @@ export const ChatInterface: React.FC = () => {
                                             <div>
                                                 <dt className="text-gray-500 mb-1">Rewritten</dt>
                                                 <dd className="font-medium text-gray-900">{response.decision.rewritten ? 'Yes' : 'No'}</dd>
+                                            </div>
+                                            <div className="sm:col-span-2">
+                                                <dt className="text-gray-500 mb-1">Original Query</dt>
+                                                <dd className="font-medium text-gray-900 italic">"{response.decision.original_query}"</dd>
+                                            </div>
+                                            <div className="sm:col-span-2">
+                                                <dt className="text-gray-500 mb-1">Current Query</dt>
+                                                <dd className="font-medium text-gray-900 italic">"{response.decision.current_query}"</dd>
                                             </div>
                                             <div>
                                                 <dt className="text-gray-500 mb-1">Attempts</dt>

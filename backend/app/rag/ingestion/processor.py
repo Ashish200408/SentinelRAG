@@ -49,11 +49,13 @@ class DocumentProcessor:
             file_size = os.path.getsize(file_path)
 
             # 4. Native Extraction
-            raw_text, page_count, pages_with_text = extractor.extract(file_path)
+            raw_pages, page_count, pages_with_text = extractor.extract(file_path)
             log("PDF Parsed")
         
             # 5. OCR Trigger Check
             pages_using_ocr = 0
+
+            raw_text = "\n".join([p["text"] for p in raw_pages])
 
             if len(raw_text.strip()) < thresholds.MIN_NATIVE_TEXT_LENGTH:
                 log("Native text below threshold.")
@@ -72,13 +74,14 @@ class DocumentProcessor:
 
                 log("OCR Triggered")
 
-                ocr_text, ocr_page_count, ocr_pages = ocr_service.extract(file_path)
+                ocr_pages, ocr_page_count, ocr_pages_count = ocr_service.extract(file_path)
+                ocr_text = "\n".join([p["text"] for p in ocr_pages])
 
                 if ocr_text.strip():
-                    raw_text = ocr_text
+                    raw_pages = ocr_pages
                     page_count = ocr_page_count
-                    pages_using_ocr = ocr_pages
-                    pages_with_text = ocr_pages
+                    pages_using_ocr = ocr_pages_count
+                    pages_with_text = ocr_pages_count
                     log("OCR Completed Successfully")
                 else:
                     log("OCR returned no text. Continuing with native extraction.")
@@ -87,7 +90,7 @@ class DocumentProcessor:
                 log("OCR Skipped")
 
             # 6. Cleaning
-            cleaned_text = cleaner.clean(raw_text)
+            cleaned_pages = cleaner.clean(raw_pages)
             log("Cleaning Completed")
 
             # 7. Metadata Generation
@@ -100,17 +103,18 @@ class DocumentProcessor:
             log("Metadata Generated")
 
             # 8. Chunking
-            chunks = chunker.chunk(cleaned_text)
+            chunks = chunker.chunk(cleaned_pages)
             log("Chunk Generation Completed")
 
             # Summary
             processing_time_ms = int((time.time() - start_time) * 1000)
             
+            final_cleaned_text = "\n".join([p["text"] for p in cleaned_pages])
             summary = ProcessingSummary(
                 pages_processed=page_count,
                 pages_with_text=pages_with_text,
                 pages_using_ocr=pages_using_ocr,
-                total_characters=len(cleaned_text),
+                total_characters=len(final_cleaned_text),
                 processing_time_ms=processing_time_ms,
                 processing_status="COMPLETED"
             )
@@ -121,16 +125,18 @@ class DocumentProcessor:
                 log("Generating Embeddings")
                 start_indexing = time.time()
                 
-                embeddings = embedding_service.generate_embeddings(chunks)
+                chunk_texts = [c["text"] for c in chunks]
+                embeddings = embedding_service.generate_embeddings(chunk_texts)
                 log("Embeddings Generated")
                 
                 payloads = []
-                for i, chunk_text in enumerate(chunks):
+                for i, chunk in enumerate(chunks):
                     payloads.append({
                         "document_id": metadata.document_id,
                         "filename": metadata.filename,
                         "chunk_index": i,
-                        "chunk_text": chunk_text,
+                        "chunk_text": chunk["text"],
+                        "page_numbers": chunk.get("page_numbers"),
                         "sha256": metadata.sha256,
                         "upload_timestamp": metadata.upload_timestamp.isoformat()
                     })
@@ -147,13 +153,14 @@ class DocumentProcessor:
                     indexing_time_ms=indexing_time_ms
                 )
             
-            preview = cleaned_text[:500] if cleaned_text else ""
+            final_chunks_list = [c["text"] for c in chunks]
+            preview = final_cleaned_text[:500] if final_cleaned_text else ""
             log("Processing Completed")
 
             return DocumentProcessingResult(
                 metadata=metadata,
-                cleaned_text=cleaned_text,
-                chunks=chunks,
+                cleaned_text=final_cleaned_text,
+                chunks=final_chunks_list,
                 preview=preview,
                 processing_summary=summary,
                 indexing_summary=indexing_summary,
@@ -165,9 +172,11 @@ class DocumentProcessor:
 
         except Exception as e:
             log(f"Processing Failed: {e}")
+            import logging
+            logging.getLogger(__name__).exception("Processing failed")
             raise HTTPException(
-        status_code=500,
-        detail=f"Processing failed: {e}",
-    )
+                status_code=500,
+                detail="An internal server error occurred while processing the document.",
+            )
 
 processor = DocumentProcessor()

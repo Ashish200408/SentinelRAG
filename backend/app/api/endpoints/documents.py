@@ -33,6 +33,13 @@ async def upload_document(file: UploadFile = File(...)):
         # Map internal result to external API response
         return document_mapper.map_to_response(result)
         
+    except HTTPException:
+        raise
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).exception("Failed to process document upload")
+        raise HTTPException(status_code=500, detail="An internal server error occurred while processing the document.")
+        
     finally:
         # Cleanup temporary file regardless of success or failure
         if os.path.exists(temp_path):

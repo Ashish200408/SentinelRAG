@@ -12,4 +12,6 @@ def query_documents(request: ChatQueryRequest):
     try:
         return rag_service.answer_query(request.question)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import logging
+        logging.getLogger(__name__).exception("Failed to process chat query")
+        raise HTTPException(status_code=500, detail="An internal server error occurred while processing the chat query.")
