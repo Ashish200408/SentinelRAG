@@ -17,7 +17,7 @@ def test_chat_happy_path(monkeypatch):
     if not settings.GEMINI_API_KEY:
         pytest.skip("GEMINI_API_KEY is not set")
         
-    def mock_evaluate(chunks):
+    def mock_evaluate(question, chunks):
         return ContextEvaluation(quality=ContextQuality.GOOD, best_score=0.9, average_score=0.85, retrieved_chunks=len(chunks))
     monkeypatch.setattr(context_evaluator, "evaluate", mock_evaluate)
 

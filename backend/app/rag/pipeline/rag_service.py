@@ -33,7 +33,7 @@ class RAGService:
             chunks = retrieval_service.retrieve(current_query)
             logger.info(f"Retrieved {len(chunks)} chunks")
             
-            evaluation = context_evaluator.evaluate(chunks)
+            evaluation = context_evaluator.evaluate(current_query, chunks)
             logger.info(f"Context evaluated")
             logger.info(f"Best similarity = {evaluation.best_score}")
             logger.info(f"Average similarity = {evaluation.average_score}")
@@ -87,7 +87,11 @@ Question:
             best_similarity=evaluation.best_score,
             average_similarity=evaluation.average_score,
             retrieved_chunks=len(chunks),
-            confidence=evaluation.best_score
+            confidence=evaluation.best_score,
+            relevance_score=evaluation.relevance_score,
+            answerability_score=evaluation.answerability_score,
+            coverage_score=evaluation.coverage_score,
+            reason=evaluation.reason
         )
         
         return ChatQueryResponse(

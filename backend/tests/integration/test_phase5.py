@@ -12,7 +12,7 @@ def test_phase5_direct_answer(monkeypatch):
     if not settings.GEMINI_API_KEY:
         pytest.skip("GEMINI_API_KEY is not set")
         
-    def mock_evaluate(chunks):
+    def mock_evaluate(question, chunks):
         return ContextEvaluation(quality=ContextQuality.GOOD, best_score=0.9, average_score=0.85, retrieved_chunks=len(chunks))
     monkeypatch.setattr(context_evaluator, "evaluate", mock_evaluate)
 
@@ -38,15 +38,16 @@ def test_phase5_rewrite_triggered(monkeypatch):
         pytest.skip("GEMINI_API_KEY is not set")
         
     # We will mock context evaluator to force the first attempt to be LOW_CONFIDENCE 
+    # We will mock context evaluator to force the first attempt to be INSUFFICIENT 
     # and the second attempt to be GOOD, to ensure the decision engine works.
     original_evaluate = context_evaluator.evaluate
     
     attempt_count = 0
-    def mock_evaluate(chunks):
+    def mock_evaluate(question, chunks):
         nonlocal attempt_count
         attempt_count += 1
         if attempt_count == 1:
-            return ContextEvaluation(quality=ContextQuality.LOW_CONFIDENCE, best_score=0.4, average_score=0.4, retrieved_chunks=1)
+            return ContextEvaluation(quality=ContextQuality.INSUFFICIENT, best_score=0.4, average_score=0.4, retrieved_chunks=1)
         return ContextEvaluation(quality=ContextQuality.GOOD, best_score=0.9, average_score=0.9, retrieved_chunks=1)
         
     monkeypatch.setattr(context_evaluator, "evaluate", mock_evaluate)

@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     # Retrieval
     RETRIEVAL_TOP_K: int = 3
     RETRIEVAL_SCORE_THRESHOLD: float = 0.3
+    STRONG_CONTEXT_THRESHOLD: float = 0.65
     GOOD_CONTEXT_THRESHOLD: float = 0.45
     LOW_CONTEXT_THRESHOLD: float = 0.25
     MAX_REWRITE_ATTEMPTS: int = 1

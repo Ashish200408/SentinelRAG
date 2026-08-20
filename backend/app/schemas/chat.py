@@ -21,6 +21,12 @@ class DecisionMetadata(BaseModel):
     average_similarity: float
     retrieved_chunks: int
     confidence: float
+    
+    # Phase 2 metrics
+    relevance_score: float = 0.0
+    answerability_score: float = 0.0
+    coverage_score: float = 0.0
+    reason: str = ""
 
 class ChatQueryRequest(BaseModel):
     question: str = Field(..., description="The user's question to be answered from the documents")
