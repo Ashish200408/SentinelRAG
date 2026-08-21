@@ -6,6 +6,9 @@ logger = logging.getLogger(__name__)
 
 class DecisionEngine:
     def decide(self, evaluation: ContextEvaluation, attempt: int) -> str:
+        if evaluation.conflict_detected:
+            return "CONFLICT_DETECTED"
+            
         if evaluation.quality == ContextQuality.GOOD:
             return "DIRECT_ANSWER"
             

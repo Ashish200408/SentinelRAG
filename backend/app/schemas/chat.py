@@ -27,6 +27,11 @@ class DecisionMetadata(BaseModel):
     answerability_score: float = 0.0
     coverage_score: float = 0.0
     reason: str = ""
+    
+    # Phase 3 metrics
+    conflict_detected: bool = False
+    conflict_reason: str = ""
+
 
 class ChatQueryRequest(BaseModel):
     question: str = Field(..., description="The user's question to be answered from the documents")

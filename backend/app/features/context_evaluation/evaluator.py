@@ -4,6 +4,7 @@ from app.rag.retrieval.models import RetrievedChunk
 from app.features.context_evaluation.models import ContextEvaluation, ContextQuality
 from app.config.settings import settings
 from app.features.context_evaluation.semantic import semantic_evaluator
+from app.features.context_evaluation.conflict import conflict_detector
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,9 @@ class ContextEvaluator:
         good_chunks = sum(1 for s in scores if s >= settings.LOW_CONTEXT_THRESHOLD)
         coverage_score = good_chunks / len(scores)
         
+        # Detect conflict
+        conflict_result = conflict_detector.detect(question, chunks)
+
         # 1. Deterministic Evaluation
         if best_score < settings.LOW_CONTEXT_THRESHOLD:
             quality = ContextQuality.INSUFFICIENT
@@ -40,9 +44,9 @@ class ContextEvaluator:
             quality = ContextQuality.UNCERTAIN
             reason = "Deterministic: Context quality is uncertain based on similarity scores."
             
-        # 2. Semantic Evaluation for UNCERTAIN cases
+        # 2. Semantic Evaluation for UNCERTAIN cases without conflict
         answerability_score = 0.0
-        if quality == ContextQuality.UNCERTAIN:
+        if quality == ContextQuality.UNCERTAIN and not conflict_result.conflict_detected:
             chunks_text = "\n\n".join([f"Document: {c.filename}\nContent: {c.chunk_text}" for c in chunks])
             logger.info("Evaluating context semantically due to uncertain deterministic score.")
             semantic_result = semantic_evaluator.evaluate(question, chunks_text)
@@ -69,7 +73,11 @@ class ContextEvaluator:
             relevance_score=best_score,
             answerability_score=answerability_score,
             coverage_score=coverage_score,
-            reason=reason
+            reason=reason,
+            conflict_detected=conflict_result.conflict_detected,
+            conflict_confidence=conflict_result.confidence,
+            conflict_reason=conflict_result.reason,
+            conflicting_chunk_indices=conflict_result.conflicting_chunk_indices
         )
 
 context_evaluator = ContextEvaluator()

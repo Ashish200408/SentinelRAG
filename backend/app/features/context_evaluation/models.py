@@ -17,3 +17,16 @@ class ContextEvaluation(BaseModel):
     answerability_score: float = 0.0
     coverage_score: float = 0.0
     reason: str = ""
+    
+    # Phase 3 conflict metrics
+    conflict_detected: bool = False
+    conflict_confidence: float = 0.0
+    conflict_reason: str = ""
+    conflicting_chunk_indices: list[int] = []
+
+
+class ConflictResult(BaseModel):
+    conflict_detected: bool
+    confidence: float
+    reason: str
+    conflicting_chunk_indices: list[int]

@@ -78,3 +78,50 @@ def test_uncertain_context_semantic_failure(monkeypatch):
     assert mock_semantic.called
     assert result.quality == ContextQuality.INSUFFICIENT
     assert "defaulting to insufficient context safely" in result.reason
+
+def test_conflict_strong_context_with_conflict():
+    evaluator = ContextEvaluator()
+    chunks = [
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=0, chunk_text="The processor operates at 3 GHz.", similarity_score=0.8, page_numbers=[1]),
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=1, chunk_text="The processor operates at 2 GHz.", similarity_score=0.8, page_numbers=[1])
+    ]
+    result = evaluator.evaluate("What is the processor speed?", chunks)
+    assert result.conflict_detected is True
+    assert result.conflicting_chunk_indices == [0, 1]
+    # Because of strong context, quality is GOOD but conflict_detected=True prevents answer in rag_service
+    assert result.quality == ContextQuality.GOOD
+    
+def test_conflict_uncertain_context_with_conflict(monkeypatch):
+    evaluator = ContextEvaluator()
+    mock_semantic = MockSemanticEvaluator(SemanticEvaluationResult(answerable=True, confidence=0.9, reason="test"))
+    monkeypatch.setattr("app.features.context_evaluation.evaluator.semantic_evaluator", mock_semantic)
+    
+    chunks = [
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=0, chunk_text="The processor operates at 3 GHz.", similarity_score=0.45, page_numbers=[1]),
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=1, chunk_text="The processor operates at 2 GHz.", similarity_score=0.45, page_numbers=[1])
+    ]
+    result = evaluator.evaluate("What is the processor speed?", chunks)
+    
+    # Semantic shouldn't be called if there's a conflict
+    assert not mock_semantic.called
+    assert result.conflict_detected is True
+    
+def test_explicit_negation_conflict():
+    evaluator = ContextEvaluator()
+    chunks = [
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=0, chunk_text="The cooling system is operational.", similarity_score=0.8, page_numbers=[1]),
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=1, chunk_text="The cooling system is not operational.", similarity_score=0.8, page_numbers=[1])
+    ]
+    result = evaluator.evaluate("Is the cooling system operational?", chunks)
+    assert result.conflict_detected is True
+    assert "negation" in result.conflict_reason.lower()
+
+def test_unrelated_chunks_no_conflict():
+    evaluator = ContextEvaluator()
+    chunks = [
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=0, chunk_text="The cooling system is operational.", similarity_score=0.8, page_numbers=[1]),
+        RetrievedChunk(document_id="1", filename="test.txt", chunk_index=1, chunk_text="The processor architecture is 64-bit.", similarity_score=0.8, page_numbers=[1])
+    ]
+    result = evaluator.evaluate("What is the status?", chunks)
+    assert result.conflict_detected is False
+

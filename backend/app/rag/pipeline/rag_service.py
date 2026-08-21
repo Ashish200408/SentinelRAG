@@ -54,6 +54,9 @@ class RAGService:
             if decision == "ASK_FOR_CLARIFICATION":
                 break
                 
+            if decision == "CONFLICT_DETECTED":
+                break
+                
         # After loop
         answer = None
         clarification = None
@@ -71,6 +74,8 @@ Question:
 {question}
 """
             answer = gemini_provider.generate_answer(prompt)
+        elif decision == "CONFLICT_DETECTED":
+            clarification = "I found conflicting information in the documents regarding your question."
         else: # ASK_FOR_CLARIFICATION
             clarification = "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?"
 
@@ -91,7 +96,9 @@ Question:
             relevance_score=evaluation.relevance_score,
             answerability_score=evaluation.answerability_score,
             coverage_score=evaluation.coverage_score,
-            reason=evaluation.reason
+            reason=evaluation.reason,
+            conflict_detected=evaluation.conflict_detected,
+            conflict_reason=evaluation.conflict_reason
         )
         
         return ChatQueryResponse(
