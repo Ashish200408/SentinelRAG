@@ -32,6 +32,11 @@ class DecisionMetadata(BaseModel):
     conflict_detected: bool = False
     conflict_reason: str = ""
 
+    # Phase 3C metrics
+    correction_attempts: int = 0
+    corrective_query: Optional[str] = None
+    conflict_resolved: Optional[bool] = None
+
 
 class ChatQueryRequest(BaseModel):
     question: str = Field(..., description="The user's question to be answered from the documents")

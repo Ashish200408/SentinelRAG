@@ -5,9 +5,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 class DecisionEngine:
-    def decide(self, evaluation: ContextEvaluation, attempt: int) -> str:
+    def decide(self, evaluation: ContextEvaluation, attempt: int, correction_attempts: int = 0) -> str:
         if evaluation.conflict_detected:
-            return "CONFLICT_DETECTED"
+            if correction_attempts == 0:
+                return "SELF_CORRECT"
+            return "ASK_FOR_CLARIFICATION"
             
         if evaluation.quality == ContextQuality.GOOD:
             return "DIRECT_ANSWER"
