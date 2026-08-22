@@ -47,14 +47,16 @@ class ConflictDetector:
                                 conflict_detected=True,
                                 confidence=1.0,
                                 reason=reason,
-                                conflicting_chunk_indices=[i, j]
+                                conflicting_chunk_indices=[i, j],
+                                conflicting_sentences=(s_i, s_j)
                             )
                             
         return ConflictResult(
             conflict_detected=False,
             confidence=0.0,
             reason="No deterministic contradiction found between chunks.",
-            conflicting_chunk_indices=[]
+            conflicting_chunk_indices=[],
+            conflicting_sentences=("", "")
         )
         
     def _check_sentence_conflict(self, s1: str, s2: str) -> Tuple[bool, str]:
@@ -94,7 +96,7 @@ class ConflictDetector:
         return False
         
     def _check_numeric_mismatch(self, s1: str, s2: str) -> bool:
-        pattern = r'\b\d+(?:\.\d+)?\b'
+        pattern = r'\b\d+(?:\.\d+)?(?=[a-zA-Z]*\b)'
         
         nums1 = re.findall(pattern, s1)
         nums2 = re.findall(pattern, s2)

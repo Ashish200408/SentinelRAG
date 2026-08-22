@@ -16,15 +16,23 @@ def mock_generate_answer(prompt: str, test_case: dict) -> str:
 
     supported = test_case.get("supported_claims", [])
     unsupported = test_case.get("unsupported_claims", [])
+    import re
+    def normalize_text(text: str) -> str:
+        if not text: return ""
+        text = text.lower()
+        text = re.sub(r'[^\w\s]', '', text)
+        text = re.sub(r'\s+', ' ', text)
+        return text.strip()
 
+    norm_context = normalize_text(context_part)
     output_claims = []
 
     for claim in supported:
-        if claim in context_part:
+        if normalize_text(claim) in norm_context:
             output_claims.append(claim)
 
     for claim in unsupported:
-        if claim in context_part:
+        if normalize_text(claim) in norm_context:
             output_claims.append(claim)
 
     if output_claims:

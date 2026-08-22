@@ -1,3 +1,12 @@
+import re
+
+def normalize_text(text: str) -> str:
+    if not text: return ""
+    text = text.lower()
+    text = re.sub(r'[^\w\s]', '', text)
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
+
 def check_hallucination(test_case: dict, behavior: str, answer: str, context: list[str], is_corrected: bool = False) -> bool:
     """
     Evaluates whether a hallucination occurred based on offline rules.
@@ -17,15 +26,18 @@ def check_hallucination(test_case: dict, behavior: str, answer: str, context: li
     if is_abstention:
         return False # Safe abstention is never a hallucination
 
+    norm_answer = normalize_text(answer)
+    norm_context = normalize_text(" ".join(context))
+
     # Check for unsupported factual claims
     for claim in test_case.get("unsupported_claims", []):
-        if claim in answer:
+        if normalize_text(claim) in norm_answer:
             return True
 
     # Check if supported claims are actually backed by the provided context
-    context_str = " ".join(context)
     for claim in test_case.get("supported_claims", []):
-        if claim in answer and claim not in context_str:
+        norm_claim = normalize_text(claim)
+        if norm_claim in norm_answer and norm_claim not in norm_context:
             return True # Claim generated but not in the available context
 
     return False

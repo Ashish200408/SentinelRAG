@@ -77,7 +77,8 @@ class ContextEvaluator:
             conflict_detected=conflict_result.conflict_detected,
             conflict_confidence=conflict_result.confidence,
             conflict_reason=conflict_result.reason,
-            conflicting_chunk_indices=conflict_result.conflicting_chunk_indices
+            conflicting_chunk_indices=conflict_result.conflicting_chunk_indices,
+            conflicting_sentences=conflict_result.conflicting_sentences
         )
 
 context_evaluator = ContextEvaluator()

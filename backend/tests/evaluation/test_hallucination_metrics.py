@@ -29,6 +29,25 @@ def test_check_hallucination():
     # Valid answer
     assert check_hallucination(case_no_abstain, "DIRECT_ANSWER", "good claim", ["good claim"]) is False
 
+def test_check_hallucination_normalization():
+    case = {
+        "should_abstain": False,
+        "unsupported_claims": ["The server is offline."],
+        "supported_claims": ["The server is online."]
+    }
+
+    # 1. "The server is online." is supported by "The server is online and healthy."
+    assert check_hallucination(case, "DIRECT_ANSWER", "The server is online.", ["The server is online and healthy."]) is False
+
+    # 2. punctuation differences do not create hallucinations
+    assert check_hallucination(case, "DIRECT_ANSWER", "The server is online", ["The server is online."]) is False
+    assert check_hallucination(case, "DIRECT_ANSWER", "The server is online.", ["The server is online"]) is False
+
+    # 3. genuinely unsupported claims are still detected
+    assert check_hallucination(case, "DIRECT_ANSWER", "The server is offline.", ["The server is online and healthy."]) is True
+
+    # 4. claim generated but not in context at all
+    assert check_hallucination(case, "DIRECT_ANSWER", "The server is online.", ["The database is running."]) is True
 
 def test_calculate_metrics():
     dataset = [

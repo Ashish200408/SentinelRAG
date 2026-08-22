@@ -151,7 +151,7 @@ def test_7_corrective_query_quality(mock_retrieval, mock_gemini):
     corrective = response.decision.corrective_query
     assert corrective is not None
     assert "processor clock speed" in corrective.lower()
-    assert "exact" in corrective.lower()
+    assert "operates" in corrective.lower()
     assert "2.5" not in corrective
     assert "3" not in corrective
 

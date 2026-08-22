@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-08-21T21:49:40.468598",
+  "timestamp": "2026-08-22T13:07:42.796636",
   "metrics": {
     "total_cases": 20,
     "baseline": {
@@ -9,20 +9,20 @@
       "hallucination_rate": 40.0
     },
     "sentinelrag": {
-      "hallucinations": 1,
-      "correct": 5,
+      "hallucinations": 0,
+      "correct": 6,
       "abstentions": 14,
-      "hallucination_rate": 5.0
+      "hallucination_rate": 0.0
     },
     "self_correction": {
       "conflict_cases": 4,
-      "conflicts_resolved": 1,
-      "conflicts_unresolved": 3,
-      "conflict_resolution_success_rate": 25.0
+      "conflicts_resolved": 2,
+      "conflicts_unresolved": 2,
+      "conflict_resolution_success_rate": 50.0
     },
     "comparison": {
-      "absolute_hallucination_reduction": 35.0,
-      "relative_hallucination_reduction": 87.5
+      "absolute_hallucination_reduction": 40.0,
+      "relative_hallucination_reduction": 100.0
     }
   },
   "per_case_results": [
@@ -255,9 +255,9 @@
         "answer": "The GPU has 8GB memory. The GPU has 16GB memory."
       },
       "sentinelrag": {
-        "behavior": "DIRECT_ANSWER",
-        "answer": "The GPU has 8GB memory. The GPU has 16GB memory.",
-        "corrected": false
+        "behavior": "ASK_FOR_CLARIFICATION",
+        "answer": "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?",
+        "corrected": true
       }
     },
     {
@@ -282,7 +282,7 @@
       },
       "sentinelrag": {
         "behavior": "DIRECT_ANSWER",
-        "answer": "I couldn't find the answer in the uploaded documents.",
+        "answer": "The server is online.",
         "corrected": true
       }
     }

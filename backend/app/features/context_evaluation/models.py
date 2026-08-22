@@ -23,6 +23,7 @@ class ContextEvaluation(BaseModel):
     conflict_confidence: float = 0.0
     conflict_reason: str = ""
     conflicting_chunk_indices: list[int] = []
+    conflicting_sentences: tuple[str, str] = ("", "")
 
 
 class ConflictResult(BaseModel):
@@ -30,3 +31,4 @@ class ConflictResult(BaseModel):
     confidence: float
     reason: str
     conflicting_chunk_indices: list[int]
+    conflicting_sentences: tuple[str, str] = ("", "")

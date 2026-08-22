@@ -24,12 +24,10 @@ def run_benchmark():
         chunks1 = [RetrievedChunk(chunk_id=f"1_{i}", document_id="doc1", filename="mock", chunk_index=0, similarity_score=0.9, chunk_text=c) for i, c in enumerate(case["initial_context"])]
         chunks2 = [RetrievedChunk(chunk_id=f"2_{i}", document_id="doc1", filename="mock", chunk_index=0, similarity_score=0.9, chunk_text=c) for i, c in enumerate(case.get("corrective_context", []))]
 
-        call_count = [0]
         def mock_retrieve(query):
-            call_count[0] += 1
-            if call_count[0] == 1:
+            if query == case["question"]:
                 return chunks1
-            if chunks2:
+            if chunks2 and query != case["question"]:
                 return chunks2
             return chunks1
 
