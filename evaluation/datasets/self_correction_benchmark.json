@@ -1,0 +1,316 @@
+[
+  {
+    "id": "ans_1",
+    "category": "ANSWERABLE",
+    "question": "What is fact 1?",
+    "initial_context": [
+      "Fact 1 is exactly X1."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ANSWER",
+    "should_abstain": false,
+    "supported_claims": [
+      "Fact 1 is exactly X1."
+    ],
+    "unsupported_claims": []
+  },
+  {
+    "id": "ans_2",
+    "category": "ANSWERABLE",
+    "question": "What is fact 2?",
+    "initial_context": [
+      "Fact 2 is exactly X2."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ANSWER",
+    "should_abstain": false,
+    "supported_claims": [
+      "Fact 2 is exactly X2."
+    ],
+    "unsupported_claims": []
+  },
+  {
+    "id": "ans_3",
+    "category": "ANSWERABLE",
+    "question": "What is fact 3?",
+    "initial_context": [
+      "Fact 3 is exactly X3."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ANSWER",
+    "should_abstain": false,
+    "supported_claims": [
+      "Fact 3 is exactly X3."
+    ],
+    "unsupported_claims": []
+  },
+  {
+    "id": "ans_4",
+    "category": "ANSWERABLE",
+    "question": "What is fact 4?",
+    "initial_context": [
+      "Fact 4 is exactly X4."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ANSWER",
+    "should_abstain": false,
+    "supported_claims": [
+      "Fact 4 is exactly X4."
+    ],
+    "unsupported_claims": []
+  },
+  {
+    "id": "unans_1",
+    "category": "UNANSWERABLE",
+    "question": "What is unknown fact 1?",
+    "initial_context": [
+      "The system contains random data 1."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "Unknown fact 1 is Y1."
+    ]
+  },
+  {
+    "id": "unans_2",
+    "category": "UNANSWERABLE",
+    "question": "What is unknown fact 2?",
+    "initial_context": [
+      "The system contains random data 2."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "Unknown fact 2 is Y2."
+    ]
+  },
+  {
+    "id": "unans_3",
+    "category": "UNANSWERABLE",
+    "question": "What is unknown fact 3?",
+    "initial_context": [
+      "The system contains random data 3."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "Unknown fact 3 is Y3."
+    ]
+  },
+  {
+    "id": "unans_4",
+    "category": "UNANSWERABLE",
+    "question": "What is unknown fact 4?",
+    "initial_context": [
+      "The system contains random data 4."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "Unknown fact 4 is Y4."
+    ]
+  },
+  {
+    "id": "ambig_1",
+    "category": "AMBIGUOUS",
+    "question": "Tell me about it 1.",
+    "initial_context": [
+      "It 1 could be many things."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "It 1 is specifically Z1."
+    ]
+  },
+  {
+    "id": "ambig_2",
+    "category": "AMBIGUOUS",
+    "question": "Tell me about it 2.",
+    "initial_context": [
+      "It 2 could be many things."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "It 2 is specifically Z2."
+    ]
+  },
+  {
+    "id": "ambig_3",
+    "category": "AMBIGUOUS",
+    "question": "Tell me about it 3.",
+    "initial_context": [
+      "It 3 could be many things."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "It 3 is specifically Z3."
+    ]
+  },
+  {
+    "id": "ambig_4",
+    "category": "AMBIGUOUS",
+    "question": "Tell me about it 4.",
+    "initial_context": [
+      "It 4 could be many things."
+    ],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "It 4 is specifically Z4."
+    ]
+  },
+  {
+    "id": "ood_1",
+    "category": "OUT_OF_DOCUMENT",
+    "question": "What is external fact 1?",
+    "initial_context": [],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "External fact 1 is W1."
+    ]
+  },
+  {
+    "id": "ood_2",
+    "category": "OUT_OF_DOCUMENT",
+    "question": "What is external fact 2?",
+    "initial_context": [],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "External fact 2 is W2."
+    ]
+  },
+  {
+    "id": "ood_3",
+    "category": "OUT_OF_DOCUMENT",
+    "question": "What is external fact 3?",
+    "initial_context": [],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "External fact 3 is W3."
+    ]
+  },
+  {
+    "id": "ood_4",
+    "category": "OUT_OF_DOCUMENT",
+    "question": "What is external fact 4?",
+    "initial_context": [],
+    "corrective_context": [],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "External fact 4 is W4."
+    ]
+  },
+  {
+    "id": "conf_1",
+    "category": "CONFLICTING_CONTEXT",
+    "question": "What is the CPU speed?",
+    "initial_context": [
+      "The CPU operates at 3 GHz.",
+      "The CPU operates at 2.5 GHz."
+    ],
+    "corrective_context": [
+      "The CPU operates at 3 GHz.",
+      "The CPU operates at 3 GHz."
+    ],
+    "expected_behavior": "ANSWER",
+    "should_abstain": true,
+    "supported_claims": [
+      "The CPU operates at 3 GHz."
+    ],
+    "unsupported_claims": [
+      "The CPU operates at 2.5 GHz."
+    ]
+  },
+  {
+    "id": "conf_2",
+    "category": "CONFLICTING_CONTEXT",
+    "question": "What is the GPU memory?",
+    "initial_context": [
+      "The GPU has 8GB memory.",
+      "The GPU has 16GB memory."
+    ],
+    "corrective_context": [
+      "The GPU has 8GB memory.",
+      "The GPU has 16GB memory."
+    ],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "The GPU has 8GB memory.",
+      "The GPU has 16GB memory."
+    ]
+  },
+  {
+    "id": "conf_3",
+    "category": "CONFLICTING_CONTEXT",
+    "question": "What is the battery capacity?",
+    "initial_context": [
+      "The battery is 5000 mAh.",
+      "The battery is 4000 mAh."
+    ],
+    "corrective_context": [
+      "The laptop is grey.",
+      "It comes with a charger."
+    ],
+    "expected_behavior": "ASK_FOR_CLARIFICATION",
+    "should_abstain": true,
+    "supported_claims": [],
+    "unsupported_claims": [
+      "The battery is 5000 mAh.",
+      "The battery is 4000 mAh."
+    ]
+  },
+  {
+    "id": "conf_4",
+    "category": "CONFLICTING_CONTEXT",
+    "question": "Is the server online?",
+    "initial_context": [
+      "The server is online.",
+      "The server is offline."
+    ],
+    "corrective_context": [
+      "The server is currently online.",
+      "The server is online and healthy."
+    ],
+    "expected_behavior": "ANSWER",
+    "should_abstain": true,
+    "supported_claims": [
+      "The server is online."
+    ],
+    "unsupported_claims": [
+      "The server is offline."
+    ]
+  }
+]
