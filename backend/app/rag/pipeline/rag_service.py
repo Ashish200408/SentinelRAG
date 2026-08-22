@@ -52,7 +52,7 @@ class RAGService:
                 
             if decision == "SELF_CORRECT":
                 correction_attempts += 1
-                corrective_query = self_correction_service.correct(question, evaluation)
+                corrective_query = self_correction_service.correct(question, evaluation, correction_attempts)
                 current_query = corrective_query
                 continue
 

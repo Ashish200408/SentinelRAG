@@ -7,6 +7,8 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     # Application settings
     APP_NAME: str = "SentinelRAG Backend"
+    ALLOWED_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:5173", "http://localhost:8080", "http://127.0.0.1:3000"]
+    MAX_CHAT_QUERY_LENGTH: int = 2000
 
     # Ingestion pipeline settings
     MAX_UPLOAD_SIZE_BYTES: int = 10 * 1024 * 1024

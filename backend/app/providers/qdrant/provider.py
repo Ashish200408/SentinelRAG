@@ -10,7 +10,8 @@ class QdrantProvider:
     def __init__(self):
         self.client = QdrantClient(
             url=settings.QDRANT_URL,
-            api_key=settings.QDRANT_API_KEY
+            api_key=settings.QDRANT_API_KEY,
+            timeout=10.0
         )
         self.collection_name = settings.QDRANT_COLLECTION
         try:
