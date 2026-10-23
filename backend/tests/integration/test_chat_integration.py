@@ -17,9 +17,15 @@ def test_chat_happy_path(monkeypatch):
     if not settings.GEMINI_API_KEY:
         pytest.skip("GEMINI_API_KEY is not set")
         
-    def mock_evaluate(chunks):
+    def mock_evaluate(question, chunks):
         return ContextEvaluation(quality=ContextQuality.GOOD, best_score=0.9, average_score=0.85, retrieved_chunks=len(chunks))
     monkeypatch.setattr(context_evaluator, "evaluate", mock_evaluate)
+
+    from app.rag.retrieval.service import RetrievalService
+    from app.rag.retrieval.models import RetrievedChunk
+    def mock_retrieve(self, q):
+        return [RetrievedChunk(document_id="1", filename="test.pdf", chunk_index=0, chunk_text="CRUD stands for Create, Read, Update, and Delete.", similarity_score=0.9, page_numbers=[1])]
+    monkeypatch.setattr(RetrievalService, "retrieve", mock_retrieve)
         
     response = client.post("/api/v1/chat/query", json={"question": "What is CRUD?"})
     assert response.status_code == 200
@@ -33,16 +39,21 @@ def test_chat_happy_path(monkeypatch):
     # Verify chunk_text is NOT in the response
     for source in data["sources"]:
         assert "chunk_text" not in source
-        assert "page_number" in source
+        assert "page_numbers" in source
 
 @pytest.mark.integration
-def test_chat_fallback():
+def test_chat_fallback(monkeypatch):
     """
     Tests the fallback path where an irrelevant question is asked.
     Gemini should reply that it couldn't find the answer.
     """
     if not settings.GEMINI_API_KEY:
         pytest.skip("GEMINI_API_KEY is not set")
+
+    from app.rag.retrieval.service import RetrievalService
+    def mock_retrieve(self, q):
+        return []
+    monkeypatch.setattr(RetrievalService, "retrieve", mock_retrieve)
         
     response = client.post("/api/v1/chat/query", json={"question": "What is the capital of Mars?"})
     assert response.status_code == 200

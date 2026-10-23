@@ -1,0 +1,290 @@
+{
+  "timestamp": "2026-08-22T13:53:07.277600",
+  "metrics": {
+    "total_cases": 20,
+    "baseline": {
+      "hallucinations": 8,
+      "correct": 4,
+      "abstentions": 8,
+      "hallucination_rate": 40.0
+    },
+    "sentinelrag": {
+      "hallucinations": 0,
+      "correct": 6,
+      "abstentions": 14,
+      "hallucination_rate": 0.0
+    },
+    "self_correction": {
+      "conflict_cases": 4,
+      "conflicts_resolved": 2,
+      "conflicts_unresolved": 2,
+      "conflict_resolution_success_rate": 50.0
+    },
+    "comparison": {
+      "absolute_hallucination_reduction": 40.0,
+      "relative_hallucination_reduction": 100.0
+    }
+  },
+  "per_case_results": [
+    {
+      "id": "ans_1",
+      "category": "ANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 1 is exactly X1."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 1 is exactly X1.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ans_2",
+      "category": "ANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 2 is exactly X2."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 2 is exactly X2.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ans_3",
+      "category": "ANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 3 is exactly X3."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 3 is exactly X3.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ans_4",
+      "category": "ANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 4 is exactly X4."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "Fact 4 is exactly X4.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "unans_1",
+      "category": "UNANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "unans_2",
+      "category": "UNANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "unans_3",
+      "category": "UNANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "unans_4",
+      "category": "UNANSWERABLE",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ambig_1",
+      "category": "AMBIGUOUS",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ambig_2",
+      "category": "AMBIGUOUS",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ambig_3",
+      "category": "AMBIGUOUS",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ambig_4",
+      "category": "AMBIGUOUS",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ood_1",
+      "category": "OUT_OF_DOCUMENT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "External fact 1 is W1."
+      },
+      "sentinelrag": {
+        "behavior": "ASK_FOR_CLARIFICATION",
+        "answer": "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ood_2",
+      "category": "OUT_OF_DOCUMENT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "External fact 2 is W2."
+      },
+      "sentinelrag": {
+        "behavior": "ASK_FOR_CLARIFICATION",
+        "answer": "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ood_3",
+      "category": "OUT_OF_DOCUMENT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "External fact 3 is W3."
+      },
+      "sentinelrag": {
+        "behavior": "ASK_FOR_CLARIFICATION",
+        "answer": "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?",
+        "corrected": false
+      }
+    },
+    {
+      "id": "ood_4",
+      "category": "OUT_OF_DOCUMENT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "External fact 4 is W4."
+      },
+      "sentinelrag": {
+        "behavior": "ASK_FOR_CLARIFICATION",
+        "answer": "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?",
+        "corrected": false
+      }
+    },
+    {
+      "id": "conf_1",
+      "category": "CONFLICTING_CONTEXT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "The CPU operates at 3 GHz. The CPU operates at 2.5 GHz."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "The CPU operates at 3 GHz.",
+        "corrected": true
+      }
+    },
+    {
+      "id": "conf_2",
+      "category": "CONFLICTING_CONTEXT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "The GPU has 8GB memory. The GPU has 16GB memory."
+      },
+      "sentinelrag": {
+        "behavior": "ASK_FOR_CLARIFICATION",
+        "answer": "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?",
+        "corrected": true
+      }
+    },
+    {
+      "id": "conf_3",
+      "category": "CONFLICTING_CONTEXT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "The battery is 5000 mAh. The battery is 4000 mAh."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "I couldn't find the answer in the uploaded documents.",
+        "corrected": true
+      }
+    },
+    {
+      "id": "conf_4",
+      "category": "CONFLICTING_CONTEXT",
+      "baseline": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "The server is online. The server is offline."
+      },
+      "sentinelrag": {
+        "behavior": "DIRECT_ANSWER",
+        "answer": "The server is online.",
+        "corrected": true
+      }
+    }
+  ]
+}

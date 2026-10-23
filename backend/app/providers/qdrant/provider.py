@@ -10,10 +10,14 @@ class QdrantProvider:
     def __init__(self):
         self.client = QdrantClient(
             url=settings.QDRANT_URL,
-            api_key=settings.QDRANT_API_KEY
+            api_key=settings.QDRANT_API_KEY,
+            timeout=10.0
         )
         self.collection_name = settings.QDRANT_COLLECTION
-        self._ensure_collection_exists()
+        try:
+            self._ensure_collection_exists()
+        except Exception as e:
+            logger.warning(f"Could not connect to Qdrant at startup: {e}")
 
     def _ensure_collection_exists(self):
         try:

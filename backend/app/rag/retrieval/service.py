@@ -49,7 +49,7 @@ class RetrievalService:
                 chunk_index=payload.get("chunk_index", 0),
                 chunk_text=payload.get("chunk_text", ""),
                 similarity_score=point.score,
-                page_number=payload.get("page_number")
+                page_numbers=payload.get("page_numbers")
             )
             retrieved_chunks.append(chunk)
 

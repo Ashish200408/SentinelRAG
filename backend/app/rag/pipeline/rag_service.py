@@ -7,6 +7,7 @@ from app.rag.retrieval.models import RetrievedChunk
 from app.features.context_evaluation.evaluator import context_evaluator
 from app.features.decision.engine import decision_engine
 from app.features.query_rewrite.service import query_rewrite_service
+from app.features.self_correction.service import self_correction_service
 from app.config.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -19,10 +20,13 @@ class RAGService:
         attempt = 0
         rewritten = False
         rewritten_query = None
+        correction_attempts = 0
+        corrective_query = None
+        conflict_resolved = None
         
         logger.info("Question received")
         
-        while attempt <= settings.MAX_REWRITE_ATTEMPTS:
+        while True:
             attempt += 1
             
             if attempt == 2:
@@ -33,25 +37,39 @@ class RAGService:
             chunks = retrieval_service.retrieve(current_query)
             logger.info(f"Retrieved {len(chunks)} chunks")
             
-            evaluation = context_evaluator.evaluate(chunks)
+            evaluation = context_evaluator.evaluate(current_query, chunks)
             logger.info(f"Context evaluated")
             logger.info(f"Best similarity = {evaluation.best_score}")
             logger.info(f"Average similarity = {evaluation.average_score}")
             
-            decision = decision_engine.decide(evaluation, attempt)
+            decision = decision_engine.decide(evaluation, attempt, correction_attempts)
             logger.info(f"Decision = {decision}")
             
             if decision == "DIRECT_ANSWER":
+                if correction_attempts > 0:
+                    conflict_resolved = True
                 break
                 
+            if decision == "SELF_CORRECT":
+                correction_attempts += 1
+                corrective_query = self_correction_service.correct(question, evaluation, correction_attempts)
+                current_query = corrective_query
+                continue
+
             if decision == "REWRITE_QUERY":
+                if attempt > settings.MAX_REWRITE_ATTEMPTS:
+                    if correction_attempts > 0:
+                        conflict_resolved = False
+                    break
                 current_query = query_rewrite_service.rewrite(question)
                 rewritten = True
                 rewritten_query = current_query
                 logger.info("Query rewritten")
                 continue
                 
-            if decision == "ASK_FOR_CLARIFICATION":
+            if decision == "ASK_FOR_CLARIFICATION" or decision == "CONFLICT_DETECTED":
+                if correction_attempts > 0 and (evaluation.conflict_detected or evaluation.quality != "GOOD"):
+                    conflict_resolved = False
                 break
                 
         # After loop
@@ -71,6 +89,8 @@ Question:
 {question}
 """
             answer = gemini_provider.generate_answer(prompt)
+        elif decision == "CONFLICT_DETECTED":
+            clarification = "I found conflicting information in the documents regarding your question."
         else: # ASK_FOR_CLARIFICATION
             clarification = "I couldn't find enough information in the uploaded documents. Could you clarify your question or upload a document containing this topic?"
 
@@ -80,12 +100,23 @@ Question:
             path=decision,
             retrieval_quality=evaluation.quality.value,
             rewritten=rewritten,
+            original_query=question,
+            current_query=current_query,
             rewritten_query=rewritten_query,
             retrieval_attempts=attempt,
             best_similarity=evaluation.best_score,
             average_similarity=evaluation.average_score,
             retrieved_chunks=len(chunks),
-            confidence=evaluation.best_score
+            confidence=evaluation.best_score,
+            relevance_score=evaluation.relevance_score,
+            answerability_score=evaluation.answerability_score,
+            coverage_score=evaluation.coverage_score,
+            reason=evaluation.reason,
+            conflict_detected=evaluation.conflict_detected,
+            conflict_reason=evaluation.conflict_reason,
+            correction_attempts=correction_attempts,
+            corrective_query=corrective_query,
+            conflict_resolved=conflict_resolved
         )
         
         return ChatQueryResponse(
